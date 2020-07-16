@@ -1,4 +1,4 @@
-package com.landmarkremark.Utils;
+package com.landmarkremark.utils;
 
 import android.app.Application;
 import android.content.Context;

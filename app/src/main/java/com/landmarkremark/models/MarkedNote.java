@@ -1,4 +1,4 @@
-package com.landmarkremark.Models;
+package com.landmarkremark.models;
 
 
 public class MarkedNote {
@@ -35,12 +35,9 @@ public class MarkedNote {
         this.name = name;
     }
 
-
-
     public String getTitle() {
         return title;
     }
-
 
     public void setTitle(String title) {
         this.title = title;

@@ -1,40 +1,27 @@
 package com.landmarkremark;
 
-import android.app.Dialog;
+import android.location.Location;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.FacebookActivity;
-import com.facebook.FacebookButtonBase;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.landmarkremark.Models.MarkedNote;
-import com.landmarkremark.Models.User;
-import com.landmarkremark.Utils.AddCustomDialog;
-import com.landmarkremark.Utils.CustomDialog;
-import com.landmarkremark.Utils.SharedPref;
-import com.landmarkremark.ui.AllMarkers.Fragment_AllMarkers;
-import com.landmarkremark.ui.home.MapsFragment;
+import com.landmarkremark.models.MarkedNote;
+import com.landmarkremark.models.User;
+import com.landmarkremark.repository.UserRepo;
+import com.landmarkremark.utils.CustomDialog;
+import com.landmarkremark.utils.SharedPref;
+import com.landmarkremark.ui.allmarkers.Fragment_AllMarkers;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -43,22 +30,45 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import org.w3c.dom.Text;
-
 
 public class MainActivity extends AppCompatActivity {
 
+    private NavController navController;
     private AppBarConfiguration mAppBarConfiguration;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    User user;
-    FloatingActionButton fab;
-    public MenuItem search;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
+    private User user;
+    private FloatingActionButton fab;
+    private MenuItem searchMenuItem;
+    private TextView navUsername, navEmail;
+    private Location markedLocation;
+    private UserRepo userRepo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        userRepo = new UserRepo();
+        initUiComponents();
+        initUser(SharedPref.getLoggedInUserId());
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveNotesInDb(user);
+            }
+        });
+    }
+
+    private void initUser(String userId) {
+        userRepo.findUser(userId, user -> {
+            this.user = user;
+            navEmail.setText(user.getEmail());
+            navUsername.setText(user.getName());
+        });
+    }
+
+    private void initUiComponents() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fab = findViewById(R.id.fab);
@@ -73,91 +83,50 @@ public class MainActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-
-        // Passing each menu ID as a set of Ids because each
         View headerView = navigationView.getHeaderView(0);
-        final TextView navUsername = headerView.findViewById(R.id.nav_name);
-        final TextView navEmail = headerView.findViewById(R.id.nav_email);
-
-        //Firebase initialization
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        //getting the reference of all users
-        databaseReference = firebaseDatabase.getReference("users");
-
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //  user = dataSnapshot.getValue(User.class);
-
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    user = userSnapshot.getValue(User.class);
-                    Log.i("All Users", user.toString());
-                    if (user.getId().equalsIgnoreCase(SharedPref.getloggedId())) {
-                        navUsername.setText(user.getName());
-                        navEmail.setText(user.getEmail());
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Calling add Notes Dialog
-                addNotes();
-
-            }
-        });
+        navUsername = headerView.findViewById(R.id.nav_name);
+        navEmail = headerView.findViewById(R.id.nav_email);
     }
-
-    public static NavController navController;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        initSearchComponents(menu);
+        return true;
+    }
 
-        final Fragment_AllMarkers fragment_allMarkers = new Fragment_AllMarkers();
-
-        search = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+    private void initSearchComponents(Menu menu) {
+        searchMenuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         //hiding search option
-        search.setVisible(false);
+        searchMenuItem.setVisible(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //searching for the item as text changes
-                fragment_allMarkers.adpaterAllMarkers.getFilter().filter(query);
-
+                searchItem(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
                 //searching for the item as text changes
-                fragment_allMarkers.adpaterAllMarkers.getFilter().filter(query);
+                searchItem(query);
                 return true;
             }
         });
+    }
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                fragment_allMarkers.adpaterAllMarkers.getFilter().filter("");
-                //     fragment_allMarkers.adpaterAllMarkers.notifyDataSetChanged();
-                return false;
-            }
-        });
+    private void searchItem(String query) {
+        Fragment_AllMarkers fragment_allMarkers = (Fragment_AllMarkers) getForegroundFragment();
+        fragment_allMarkers.searchItem(query);
+    }
 
-
-        return true;
+    public Fragment getForegroundFragment() {
+        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+        return navHostFragment == null ? null : currentFragment;
     }
 
     @Override
@@ -166,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             //clearing the sharedPref
@@ -177,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -189,22 +156,52 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //adding notes at current location
-    public void addNotes() {
+    private void saveNotesInDb(final User user) {
+        MarkedNote markedNote = fromLocation(getMarkedLocation());
+        CustomDialog customDialog = new CustomDialog(MainActivity.this);
+        customDialog.promptAndAcceptNote(user, markedNote, () -> userRepo.addNotesToDb(user, markedNote));
+    }
 
-        CustomDialog customDialog = new CustomDialog(databaseReference, MainActivity.this);
-        customDialog.addNotes(user);
-
+    private MarkedNote fromLocation(Location location) {
+        MarkedNote note = new MarkedNote();
+        note.setAddress(SharedPref.convertLatLngToAddress(this, location.getLatitude(), location.getLongitude()));
+        note.setLatitude(String.valueOf(location.getLatitude()));
+        note.setLongitude(String.valueOf(location.getLongitude()));
+        return note;
     }
 
     //hiding FloatingAction Button
-    public void hideFAB() {
+    public void hideFab() {
         fab.setVisibility(View.GONE);
     }
 
     //showing FloatingAction Button
-    public void showFAB() {
+    public void showFab() {
         fab.setVisibility(View.VISIBLE);
     }
 
+    //Getters
+    public NavController getNavController() {
+        return navController;
+    }
 
+    public MenuItem getSearchMenuItem() {
+        return searchMenuItem;
+    }
+
+    public FirebaseDatabase getFirebaseDatabase() {
+        return firebaseDatabase;
+    }
+
+    public DatabaseReference getDatabaseReference() {
+        return databaseReference;
+    }
+
+    public Location getMarkedLocation() {
+        return markedLocation;
+    }
+
+    public void setMarkedLocation(Location markedLocation) {
+        this.markedLocation = markedLocation;
+    }
 }

@@ -1,4 +1,4 @@
-package com.landmarkremark.Adapter;
+package com.landmarkremark.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,28 +9,27 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.landmarkremark.Models.MarkedNote;
+import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.R;
-import com.landmarkremark.Utils.CustomDialog;
-
-import org.w3c.dom.Text;
+import com.landmarkremark.utils.CustomDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.ViewHolder> implements Filterable {
 
-    ArrayList<MarkedNote> markedNoteArrayList;
-    ArrayList<MarkedNote> searchNoteArrayList;
-    Context context;
+    private List<MarkedNote> markedNotes = new ArrayList<>();
+    private Context context;
 
-    public AdpaterAllMarkers(Context con, ArrayList<MarkedNote> markedNotes) {
-        this.context = con;
-        this.markedNoteArrayList = markedNotes;
-        this.searchNoteArrayList = markedNotes;
+    public AdpaterAllMarkers(Context context) {
+        this.context = context;
+    }
+
+    public void addNote(MarkedNote markedNote) {
+        this.markedNotes.add(markedNote);
     }
 
     @Override
@@ -41,15 +40,15 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
 
     @Override
     public void onBindViewHolder(AdpaterAllMarkers.ViewHolder holder, final int position) {
-        holder.title_tv.setText("Title: " + markedNoteArrayList.get(position).getTitle());
-        holder.address_tv.setText("Address: " + markedNoteArrayList.get(position).getAddress());
-        holder.name_tv.setText("Name: " + markedNoteArrayList.get(position).getName());
+        holder.title_tv.setText("Title: " + markedNotes.get(position).getTitle());
+        holder.address_tv.setText("Address: " + markedNotes.get(position).getAddress());
+        holder.name_tv.setText("Name: " + markedNotes.get(position).getName());
 
         holder.itemCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CustomDialog customDialog = new CustomDialog(context, markedNoteArrayList.get(position));
-                customDialog.viewNotes();
+                CustomDialog customDialog = new CustomDialog(context);
+                customDialog.viewNotes(markedNotes.get(position));
             }
         });
 
@@ -57,7 +56,7 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
 
     @Override
     public int getItemCount() {
-        return markedNoteArrayList.size();
+        return markedNotes.size();
     }
 
 
@@ -71,10 +70,10 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
         protected FilterResults performFiltering(CharSequence constraint) {
             ArrayList<MarkedNote> filteredList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(markedNoteArrayList);
+                filteredList.addAll(markedNotes);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                for (MarkedNote item : markedNoteArrayList) {
+                for (MarkedNote item : markedNotes) {
                     if (item.getName().toLowerCase().contains(filterPattern) || item.getTitle().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
@@ -87,9 +86,9 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            if (searchNoteArrayList.size() > 0) {
-                searchNoteArrayList.clear();
-                searchNoteArrayList.addAll((ArrayList) results.values);
+            if (markedNotes.size() > 0) {
+                markedNotes.clear();
+                markedNotes.addAll((ArrayList) results.values);
                 notifyDataSetChanged();
             } else {
                 Toast.makeText(context, "No item for search result", Toast.LENGTH_SHORT).show();
