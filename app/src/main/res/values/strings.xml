@@ -28,7 +28,10 @@
     <string name="title_activity_maps">Map</string>
     <string name="add_new_note">Add New Note</string>
     <string name="success">Successfully Added.</string>
-    <string name="click_marker">Click on Marker to add notes</string>
+    <string name="click_marker">Click on marker to add notes</string>
     <string name="title_cannot_be_empty"><![CDATA[Title & Description cannot be empty]]></string>
+    <string name="not_auth">You are not authorized.</string>
+    <string name="granted">Permission granted</string>
+    <string name="denied">Permission denied</string>
 
 </resources>

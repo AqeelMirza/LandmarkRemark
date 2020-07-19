@@ -1,7 +1,6 @@
 package com.landmarkremark.repository;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -83,7 +82,7 @@ public class UserRepo {
 
     }
 
-    public void findUser(String userId, Consumer<User> onUserFound) {
+    public void findUser(String userId, User user, Consumer<User> onUserFound) {
         //getting the reference of all users
         DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users);
 
@@ -92,7 +91,9 @@ public class UserRepo {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User userById = getUserById(dataSnapshot, userId);
                 if (userById == null) {
-                    throw new RuntimeException("No User Found in DB");
+                    //no User found, create new user
+                    createNewUser(user);
+                    return;
                 }
                 onUserFound.accept(userById);
             }
@@ -111,6 +112,12 @@ public class UserRepo {
             }
         }
         return null;
+    }
+
+    public void createNewUser(User user) {
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
+        //Insert user in database
+        databaseReference.child(user.getId()).setValue(user);
     }
 
 }

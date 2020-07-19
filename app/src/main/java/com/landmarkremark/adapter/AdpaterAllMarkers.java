@@ -2,18 +2,16 @@ package com.landmarkremark.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.R;
+import com.landmarkremark.databinding.RecviewItemsBinding;
+import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.utils.CustomDialog;
 
 import java.util.ArrayList;
@@ -34,23 +32,19 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
 
     @Override
     public AdpaterAllMarkers.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        return new ViewHolder(inflater.inflate(R.layout.recview_items, parent, false));
+        return new ViewHolder(RecviewItemsBinding.inflate(LayoutInflater.from(parent.getContext()),
+                parent, false));
     }
 
     @Override
     public void onBindViewHolder(AdpaterAllMarkers.ViewHolder holder, final int position) {
 
-        holder.title_tv.setText(String.format("%s: %s", context.getString(R.string.title), markedNotes.get(position).getTitle()));
-        holder.address_tv.setText(String.format("%s: %s", context.getString(R.string.address), markedNotes.get(position).getAddress()));
-        holder.name_tv.setText(String.format("%s: %s", context.getString(R.string.name), markedNotes.get(position).getName()));
-
-        holder.itemCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CustomDialog customDialog = new CustomDialog(context);
-                customDialog.viewNotes(markedNotes.get(position));
-            }
+        holder.recviewItemsBinding.itemTitle.setText(String.format("%s: %s", context.getString(R.string.title), markedNotes.get(position).getTitle()));
+        holder.recviewItemsBinding.itemAddress.setText(String.format("Address: %s", markedNotes.get(position).getAddress()));
+        holder.recviewItemsBinding.itemUsername.setText(String.format("Name: %s", markedNotes.get(position).getName()));
+        holder.recviewItemsBinding.itemCardView.setOnClickListener(view -> {
+            CustomDialog customDialog = new CustomDialog(context);
+            customDialog.viewNotes(markedNotes.get(position));
         });
     }
 
@@ -58,7 +52,6 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
     public int getItemCount() {
         return markedNotes.size();
     }
-
 
     @Override
     public Filter getFilter() {
@@ -96,18 +89,12 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
         }
     };
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private RecviewItemsBinding recviewItemsBinding;
 
-        public TextView name_tv, address_tv, title_tv;
-        public CardView itemCard;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            itemCard = itemView.findViewById(R.id.itemCardView);
-            name_tv = itemView.findViewById(R.id.itemUsername);
-            address_tv = itemView.findViewById(R.id.itemAddress);
-            title_tv = itemView.findViewById(R.id.itemTitle);
+        public ViewHolder(RecviewItemsBinding recviewItemsBinding) {
+            super(recviewItemsBinding.getRoot());
+            this.recviewItemsBinding = recviewItemsBinding;
         }
     }
 

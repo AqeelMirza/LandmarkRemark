@@ -12,21 +12,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.landmarkremark.adapter.AdpaterAllMarkers;
 import com.landmarkremark.MainActivity;
-import com.landmarkremark.R;
+import com.landmarkremark.databinding.FragmentAllmarkersBinding;
 import com.landmarkremark.repository.UserRepo;
 
 public class FragmentAllMarkers extends Fragment {
 
-    private RecyclerView recyclerView;
     public AdpaterAllMarkers adpaterAllMarkers;
     private UserRepo userRepo;
+    private FragmentAllmarkersBinding fragmentAllMarkersBinding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_allmarkers, container, false);
+        fragmentAllMarkersBinding = FragmentAllmarkersBinding.inflate(inflater, container, false);
+        View root = fragmentAllMarkersBinding.getRoot();
 
         userRepo = new UserRepo();
-        initRecyclerView(root);
+        initRecyclerView();
 
         //if not home Fragment hide the Add button
         Activity activity = getActivity();
@@ -35,15 +36,15 @@ public class FragmentAllMarkers extends Fragment {
         mainActivity.getSearchMenuItem().setVisible(true);
         adpaterAllMarkers = new AdpaterAllMarkers(getActivity());
         loadAllNotes(adpaterAllMarkers);
-        recyclerView.setAdapter(adpaterAllMarkers);
+        fragmentAllMarkersBinding.allMarkerRec.setAdapter(adpaterAllMarkers);
 
         return root;
     }
 
-    private void initRecyclerView(View root) {
-        recyclerView = root.findViewById(R.id.allMarker_Rec);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    private void initRecyclerView() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        fragmentAllMarkersBinding.allMarkerRec.setHasFixedSize(true);
+        fragmentAllMarkersBinding.allMarkerRec.setLayoutManager(layoutManager);
     }
 
     private void loadAllNotes(AdpaterAllMarkers adpaterAllMarkers) {
@@ -56,10 +57,9 @@ public class FragmentAllMarkers extends Fragment {
     public void searchItem(String query) {
         if (query.length() > 0) {
             adpaterAllMarkers.getFilter().filter(query);
-        }else{
+        } else {
             adpaterAllMarkers.markedNotes.clear();
             loadAllNotes(adpaterAllMarkers);
         }
     }
-
 }

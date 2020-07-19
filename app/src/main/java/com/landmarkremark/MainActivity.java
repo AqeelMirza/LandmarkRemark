@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUser(String userId) {
-        userRepo.findUser(userId, user -> {
+        userRepo.findUser(userId, null, user -> {
             this.user = user;
             Utils.username = user.getName();
             navEmail.setText(user.getEmail());

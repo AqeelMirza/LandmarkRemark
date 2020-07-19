@@ -2,7 +2,6 @@ package com.landmarkremark;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -44,7 +43,6 @@ public class AddNewNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String title = titleEdittext.getText().toString().trim();
                 String desc = descEdittext.getText().toString();
-                address = addressText.getText().toString();
                 if (TextUtils.isEmpty(title) || TextUtils.isEmpty(desc)) {
                     Toast.makeText(AddNewNoteActivity.this, R.string.title_cannot_be_empty, Toast.LENGTH_SHORT).show();
                 } else {
@@ -56,8 +54,6 @@ public class AddNewNoteActivity extends AppCompatActivity {
     }
 
     private void moveToMain() {
-        /*Intent in = new Intent(AddNewNoteActivity.this, MainActivity.class);
-        startActivity(in);*/
         finish();
     }
 

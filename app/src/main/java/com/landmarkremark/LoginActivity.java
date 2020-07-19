@@ -8,9 +8,11 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -21,9 +23,12 @@ import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.landmarkremark.models.User;
+import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.Utils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
@@ -56,6 +61,16 @@ public class LoginActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
 
+        FacebookLoginOnClick();
+
+        //checking if the user is already loggedIn
+        if (Utils.getIsLoggedIn()) {
+            // check for permissions and navigating to MainActivity
+            requestPermissionAndNavigate();
+        }
+    }
+
+    private void FacebookLoginOnClick() {
         mCallbackManager = CallbackManager.Factory.create();
 
         mLoginButton = findViewById(R.id.fb_login_btn);
@@ -100,12 +115,6 @@ public class LoginActivity extends AppCompatActivity {
                 throw new RuntimeException("Unable to access Facebook", e);
             }
         });
-
-        //checking if the user is already loggedIn
-        if (Utils.getIsLoggedIn()) {
-            // check for permissions and navigating to MainActivity
-            requestPermissionAndNavigate();
-        }
     }
 
     private void onLoginSuccess(JSONObject object) {
@@ -121,12 +130,12 @@ public class LoginActivity extends AppCompatActivity {
         requestPermissionAndNavigate();
     }
 
-    private void syncDb(User user) {
-        //Firebase initialization
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("users");
-        //Insert user in database
-        databaseReference.child(user.getId()).setValue(user);
+    private void syncDb(User newUser) {
+        UserRepo userRepo = new UserRepo();
+        userRepo.findUser(newUser.getId(), newUser, user -> {
+            //If user exists
+            Log.i("LoginActivity", "User found");
+        });
     }
 
     private void initSharedPref(User user) {
@@ -180,16 +189,13 @@ public class LoginActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
-                    Toast.makeText(getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.granted, Toast.LENGTH_SHORT).show();
                     moveToMainActivity();
                 } else {
                     // permission denied,
                     // functionality that depends on this permission may not work properly.
-                    Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.denied, Toast.LENGTH_SHORT).show();
                 }
-            }
-            default: {
-                throw new IllegalArgumentException("Expected value for request code is 1 but got " + requestCode);
             }
         }
     }
