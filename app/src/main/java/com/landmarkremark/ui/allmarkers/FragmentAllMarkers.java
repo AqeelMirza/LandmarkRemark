@@ -62,4 +62,9 @@ public class FragmentAllMarkers extends Fragment {
             loadAllNotes(adpaterAllMarkers);
         }
     }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        fragmentAllMarkersBinding = null;
+    }
 }

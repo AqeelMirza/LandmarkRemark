@@ -47,9 +47,8 @@ public class CustomDialog implements ICustomDialog {
         // custom dialog
         dialog = new Dialog(context);
         dialog.setCancelable(true);
-        dialog.setContentView(R.layout.fragment_addmarker);
+        dialog.setContentView(R.layout.custom_dialog);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT); //<--Controlling width and height.
-        //Dialog view 0bjects
 // set the custom dialog components
         name = dialog.findViewById(R.id.addMarker_name_tv);
         address = dialog.findViewById(R.id.addMarker_addr_tv);

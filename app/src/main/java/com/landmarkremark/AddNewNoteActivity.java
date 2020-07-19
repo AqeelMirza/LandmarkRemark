@@ -1,16 +1,12 @@
 package com.landmarkremark;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
+import com.landmarkremark.databinding.ActivityAddNewNoteBinding;
 import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.Utils;
@@ -18,31 +14,31 @@ import com.landmarkremark.utils.Utils;
 public class AddNewNoteActivity extends AppCompatActivity {
     private UserRepo userRepo;
     private Location location;
-    private EditText titleEdittext, descEdittext;
-    private TextView nameText, addressText;
     private String address;
+    private ActivityAddNewNoteBinding activityAddNewNoteBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_note);
-
+        activityAddNewNoteBinding = ActivityAddNewNoteBinding.inflate(getLayoutInflater());
+        View view = activityAddNewNoteBinding.getRoot();
+        setContentView(view);
+        //set title on toolbar
         AddNewNoteActivity.this.setTitle(getString(R.string.add_new_note));
 
         userRepo = new UserRepo();
         getMarkedLocation();
-        init();
+        setNameAndAddress();
         onSubmitClick();
     }
 
     private void onSubmitClick() {
-        Button submitBtn = findViewById(R.id.addMarker_SubmitBtn);
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
+        activityAddNewNoteBinding.addMarkerSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String title = titleEdittext.getText().toString().trim();
-                String desc = descEdittext.getText().toString();
+                String title = activityAddNewNoteBinding.addMarkerTitleEt.getText().toString().trim();
+                String desc = activityAddNewNoteBinding.addMarkerDescEt.getText().toString();
                 if (TextUtils.isEmpty(title) || TextUtils.isEmpty(desc)) {
                     Toast.makeText(AddNewNoteActivity.this, R.string.title_cannot_be_empty, Toast.LENGTH_SHORT).show();
                 } else {
@@ -57,14 +53,10 @@ public class AddNewNoteActivity extends AppCompatActivity {
         finish();
     }
 
-    private void init() {
+    private void setNameAndAddress() {
         address = getAddress(location);
-        titleEdittext = findViewById(R.id.addMarker_title_et);
-        descEdittext = findViewById(R.id.addMarker_desc_et);
-        nameText = findViewById(R.id.addMarker_name_header);
-        nameText.setText(String.format("%s: %s", getString(R.string.name), Utils.username));
-        addressText = findViewById(R.id.addMarker_address_tv);
-        addressText.setText(String.format("%s: %s", getString(R.string.address), address));
+        activityAddNewNoteBinding.addMarkerNameHeader.setText(String.format("%s: %s", getString(R.string.name), Utils.username));
+        activityAddNewNoteBinding.addMarkerAddressTv.setText(String.format("%s: %s", getString(R.string.address), address));
     }
 
     //getting the location Object from prev fragment

@@ -37,11 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final String AUTH_TYPE = "rerequest";//Location Permission tag
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
-    //Firebase
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
-
     //Facebook Callback
     private CallbackManager mCallbackManager;
     private LoginButton mLoginButton;

@@ -23,16 +23,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/min_margin"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#000" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
         android:id="@+id/addMarker_desc_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/min_margin"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#000" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
     <TextView
@@ -40,8 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/min_margin"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#000" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <View
         android:layout_width="match_parent"
