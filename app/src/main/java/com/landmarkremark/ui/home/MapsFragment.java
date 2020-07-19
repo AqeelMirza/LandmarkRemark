@@ -23,12 +23,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.landmarkremark.AddNewNoteActivity;
 import com.landmarkremark.MainActivity;
 import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.R;
 import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.CustomDialog;
-import com.landmarkremark.utils.SharedPref;
+import com.landmarkremark.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         userRepo = new UserRepo();
         initGoogleMaps();
 
-        //if not home Fragment hide the Add button
+        //if home Fragment hide the Search button
         mainActivity = (MainActivity) getActivity();
         try {
             if (mainActivity.getSearchMenuItem().isVisible()) {
@@ -55,13 +56,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if (mainActivity.getNavController().getCurrentDestination().getLabel().equals(SharedPref.home_label)) {
-            //showing the FAB Button on Home Screen
-            mainActivity.showFab();
-        } else {
-            //Hiding the FAB
-            mainActivity.hideFab();
         }
         return view;
     }
@@ -87,16 +81,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        if (mainActivity.getNavController().getCurrentDestination().getLabel().equals(SharedPref.home_label)) {
-            if (SharedPref.isLocationEnabled(getActivity())) {
+        if (mainActivity.getNavController().getCurrentDestination().getLabel().equals(Utils.home_label)) {
+            if (Utils.isLocationEnabled(getActivity())) {
                 setMarkerOnCurrentLocation();
             } else {
                 Toast.makeText(getActivity(), "Please switch on Location services.", Toast.LENGTH_SHORT).show();
                 //navigating to Settings
                 startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
             }
-        } else if (mainActivity.getNavController().getCurrentDestination().getLabel().equals(SharedPref.myLandmarks_label)) {
-            populateNotesAndSetupGoogleMap(SharedPref.getLoggedInUserId(), googleMap);
+        } else if (mainActivity.getNavController().getCurrentDestination().getLabel().equals(Utils.myLandmarks_label)) {
+            List<MarkedNote> myMarked = new ArrayList<>();
+            populateNotesAndSetupGoogleMap(Utils.getLoggedInUserId(), googleMap, myMarked);
         }
     }
 
@@ -108,7 +103,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         if (location != null) {
             LatLng myLoc = new LatLng(location.getLatitude(), location.getLongitude());
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 5));
-            googleMap.addMarker(new MarkerOptions().position(myLoc).title("You are here!"));
+            googleMap.addMarker(new MarkerOptions().position(myLoc).title(getString(R.string.click_marker))).showInfoWindow();
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
                     .zoom(17)                   // Sets the zoom
@@ -116,33 +111,48 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            //setting the details of the location
-            setCurrentLocation(location);
-
-
+            //setting onClick to Add Marker
+            setGoogleMapClickListener(googleMap, null, location, 1);
         }
     }
 
-    private void setCurrentLocation(Location location) {
-        mainActivity.setMarkedLocation(location);
+    private void addNewNotes(Location location) {
+        Intent in = new Intent(getActivity(), AddNewNoteActivity.class);
+        in.putExtra("location", location);
+        startActivity(in);
     }
 
-    private void populateNotesAndSetupGoogleMap(String userId, GoogleMap googleMap) {
+    private void populateNotesAndSetupGoogleMap(String userId, GoogleMap googleMap, List<MarkedNote> myMarked) {
         userRepo.findUserNotes(userId, note -> {
+            myMarked.add(note);
             addMarkerOnMap(note, googleMap);
-            setGoogleMapClickListener(googleMap, note);
+            setGoogleMapClickListener(googleMap, myMarked, null, 2);
         });
     }
 
-    private void setGoogleMapClickListener(GoogleMap googleMap, final MarkedNote note) {
+    //onClick on Markers
+    private void setGoogleMapClickListener(GoogleMap googleMap, final List<MarkedNote> notes, Location location, int type) {
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                CustomDialog customDialog = new CustomDialog(getActivity());
-                customDialog.viewNotes(note);
+                if (type == 2) {
+                    CustomDialog customDialog = new CustomDialog(getActivity());
+                    for (MarkedNote markedNote : notes) {
+                        if (marker.getPosition().equals(getLatLng(markedNote)))
+                            customDialog.viewNotes(markedNote);
+                    }
+                } else if (type == 1) {
+                    addNewNotes(location);
+                }
                 return true;
             }
         });
+    }
+
+    private LatLng getLatLng(MarkedNote markedNote) {
+        Double lat = Double.valueOf(markedNote.getLatitude());
+        Double lon = Double.valueOf(markedNote.getLongitude());
+        return new LatLng(lat, lon);
     }
 
     //setting users marker on Map
@@ -160,5 +170,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 .anchor(0.5f, 0.5f)
                 .title(note.getTitle())
                 .snippet(note.getDescription()));
+    }
+
+    private void returnToMain() {
+
     }
 }

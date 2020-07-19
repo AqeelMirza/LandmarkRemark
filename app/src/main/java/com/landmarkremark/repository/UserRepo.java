@@ -1,6 +1,7 @@
 package com.landmarkremark.repository;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -9,10 +10,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.models.User;
-import com.landmarkremark.utils.SharedPref;
+import com.landmarkremark.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class UserRepo {
@@ -42,7 +41,7 @@ public class UserRepo {
     }
 
     public void findAllNotes(Consumer<MarkedNote> markedNoteConsumer) {
-        final DatabaseReference userRef = firebaseDatabase.getReference().child(SharedPref.Users);
+        final DatabaseReference userRef = firebaseDatabase.getReference().child(Utils.users);
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -75,19 +74,18 @@ public class UserRepo {
         });
     }
 
-    public void addNotesToDb(User user, MarkedNote markedNote) {
-        markedNote.setId(String.valueOf(SharedPref.createRandomInt()));
-        markedNote.setName(user.getName());
+    public void addNotesToDb(MarkedNote markedNote) {
+        markedNote.setId(String.valueOf(Utils.createRandomInt()));
 
         //Creating a new Note
-        DatabaseReference databaseReference = firebaseDatabase.getReference(SharedPref.Users);
-        databaseReference.child(user.getId()).child(SharedPref.MarkedNote).child(markedNote.getId()).setValue(markedNote);
+        DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users);
+        databaseReference.child(Utils.getLoggedInUserId()).child(Utils.MarkedNote).child(markedNote.getId()).setValue(markedNote);
 
     }
 
     public void findUser(String userId, Consumer<User> onUserFound) {
         //getting the reference of all users
-        DatabaseReference databaseReference = firebaseDatabase.getReference(SharedPref.Users);
+        DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users);
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

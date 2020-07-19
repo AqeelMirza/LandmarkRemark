@@ -1,6 +1,8 @@
 package com.landmarkremark.models;
 
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class MarkedNote {
 
     private String id;
@@ -66,4 +68,5 @@ public class MarkedNote {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
+
 }

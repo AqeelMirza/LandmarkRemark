@@ -11,37 +11,28 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/min_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000"
-        android:visibility="gone" />
+        android:textColor="@color/colorPrimary" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"></View>
+
+    <TextView
+        android:id="@+id/addMarker_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_margin">
+        android:padding="@dimen/min_margin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#000" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/addMarker_title_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/title"
-            android:inputType="text"
-            android:maxLines="1" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
+    <TextView
+        android:id="@+id/addMarker_desc_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_margin">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/addMarker_desc_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/notes"
-            android:inputType="text" />
-
-    </com.google.android.material.textfield.TextInputLayout>
+        android:padding="@dimen/min_margin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#000" />
 
 
     <TextView
@@ -52,13 +43,20 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#000" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"></View>
+
     <Button
         android:id="@+id/addMarker_btn"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="@dimen/min_margin"></Button>
+        android:layout_margin="@dimen/min_margin"
+        android:padding="@dimen/min_margin"
+        android:text="@string/ok"></Button>
 
 
 </LinearLayout>

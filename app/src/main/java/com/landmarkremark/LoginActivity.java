@@ -8,11 +8,9 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -23,11 +21,9 @@ import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.landmarkremark.models.User;
-import com.landmarkremark.utils.SharedPref;
-
+import com.landmarkremark.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
@@ -106,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //checking if the user is already loggedIn
-        if (SharedPref.getIsLoggedIn()) {
+        if (Utils.getIsLoggedIn()) {
             // check for permissions and navigating to MainActivity
             requestPermissionAndNavigate();
         }
@@ -135,8 +131,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initSharedPref(User user) {
         // save value if LoggedIn successfully
-        SharedPref.setIsLoggedIn(true);
-        SharedPref.setLoggedId(user.getId());
+        Utils.setIsLoggedIn(true);
+        Utils.setLoggedId(user.getId());
     }
 
     private User createUser(JSONObject object) throws JSONException {

@@ -10,16 +10,16 @@ import android.widget.TextView;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.material.snackbar.Snackbar;
 import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.models.User;
 import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.CustomDialog;
-import com.landmarkremark.utils.SharedPref;
-import com.landmarkremark.ui.allmarkers.Fragment_AllMarkers;
+import com.landmarkremark.utils.Utils;
+import com.landmarkremark.ui.allmarkers.FragmentAllMarkers;
 
 import androidx.appcompat.widget.SearchView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -35,13 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
     private NavController navController;
     private AppBarConfiguration mAppBarConfiguration;
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
     private User user;
-    private FloatingActionButton fab;
     private MenuItem searchMenuItem;
+    private CoordinatorLayout coordinatorLayout;
     private TextView navUsername, navEmail;
-    private Location markedLocation;
     private UserRepo userRepo;
 
     @Override
@@ -50,19 +47,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         userRepo = new UserRepo();
         initUiComponents();
-        initUser(SharedPref.getLoggedInUserId());
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveNotesInDb(user);
-            }
-        });
+        initUser(Utils.getLoggedInUserId());
     }
 
     private void initUser(String userId) {
         userRepo.findUser(userId, user -> {
             this.user = user;
+            Utils.username = user.getName();
             navEmail.setText(user.getEmail());
             navUsername.setText(user.getName());
         });
@@ -71,10 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private void initUiComponents() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        fab = findViewById(R.id.fab);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_myMarkers, R.id.nav_allMarkers)
@@ -119,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void searchItem(String query) {
-        Fragment_AllMarkers fragment_allMarkers = (Fragment_AllMarkers) getForegroundFragment();
+        FragmentAllMarkers fragment_allMarkers = (FragmentAllMarkers) getForegroundFragment();
         fragment_allMarkers.searchItem(query);
     }
 
@@ -138,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             //clearing the sharedPref
-            SharedPref.clearPref();
+            Utils.clearPref();
             //logging out from facebook
             LoginManager.getInstance().logOut();
             //closing the Activity
@@ -155,31 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    //adding notes at current location
-    private void saveNotesInDb(final User user) {
-        MarkedNote markedNote = fromLocation(getMarkedLocation());
-        CustomDialog customDialog = new CustomDialog(MainActivity.this);
-        customDialog.promptAndAcceptNote(user, markedNote, () -> userRepo.addNotesToDb(user, markedNote));
-    }
-
-    private MarkedNote fromLocation(Location location) {
-        MarkedNote note = new MarkedNote();
-        note.setAddress(SharedPref.convertLatLngToAddress(this, location.getLatitude(), location.getLongitude()));
-        note.setLatitude(String.valueOf(location.getLatitude()));
-        note.setLongitude(String.valueOf(location.getLongitude()));
-        return note;
-    }
-
-    //hiding FloatingAction Button
-    public void hideFab() {
-        fab.setVisibility(View.GONE);
-    }
-
-    //showing FloatingAction Button
-    public void showFab() {
-        fab.setVisibility(View.VISIBLE);
-    }
-
     //Getters
     public NavController getNavController() {
         return navController;
@@ -187,21 +152,5 @@ public class MainActivity extends AppCompatActivity {
 
     public MenuItem getSearchMenuItem() {
         return searchMenuItem;
-    }
-
-    public FirebaseDatabase getFirebaseDatabase() {
-        return firebaseDatabase;
-    }
-
-    public DatabaseReference getDatabaseReference() {
-        return databaseReference;
-    }
-
-    public Location getMarkedLocation() {
-        return markedLocation;
-    }
-
-    public void setMarkedLocation(Location markedLocation) {
-        this.markedLocation = markedLocation;
     }
 }

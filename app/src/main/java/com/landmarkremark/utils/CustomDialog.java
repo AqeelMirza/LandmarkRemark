@@ -2,27 +2,20 @@ package com.landmarkremark.utils;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.landmarkremark.models.MarkedNote;
-import com.landmarkremark.models.User;
 import com.landmarkremark.R;
-import com.landmarkremark.repository.UserRepo;
 
-public class CustomDialog implements AddCustomDialog {
+public class CustomDialog implements ICustomDialog {
     Context context;
     TextView address, name;
-    EditText title_et;
-    EditText notes_et;
+    TextView title_tv, desc_tv;
     Button dialogButton;
     Dialog dialog;
-    UserRepo userRepo;
 
     public CustomDialog(Context context) {
         this.context = context;
@@ -30,57 +23,26 @@ public class CustomDialog implements AddCustomDialog {
     }
 
     @Override
-    public void promptAndAcceptNote(final User user, MarkedNote note, final Runnable runnable) {
-        //setting the address
-        address.setText("Address: " + note.getAddress());
-        // if button is clicked, close the custom dialog
-        dialogButton.setText("Add Marker");
-        name.setVisibility(View.GONE);//updating view pref
-        title_et.setEnabled(true);
-        notes_et.setEnabled(true);
+    public void viewNotes(MarkedNote markedNote) {
+
+        //updating view pref
+        name.setVisibility(View.VISIBLE);
+        //setting values
+        name.setText(String.format("%s: %s", context.getString(R.string.name), markedNote.getName()));
+        address.setText(String.format("%s\n%s", context.getString(R.string.address), markedNote.getAddress()));
+        title_tv.setText(String.format("%s\n%s", context.getString(R.string.title), markedNote.getTitle()));
+        desc_tv.setText(String.format("%s\n%s", context.getString(R.string.notes), markedNote.getDescription()));
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = title_et.getText().toString().trim();
-                String notes = notes_et.getText().toString();
-                if (TextUtils.isEmpty(title)) {
-                    Toast.makeText(context, "Title cannot be empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    note.setTitle(title);
-                    note.setDescription(notes);
-                    runnable.run();
-                    dialog.dismiss();
-                }
+                dialog.dismiss();
             }
         });
         dialog.show();
     }
 
     @Override
-    public void viewNotes(MarkedNote markedNote) {
-
-//updating view pref
-        title_et.setEnabled(false);
-        notes_et.setEnabled(false);
-        name.setVisibility(View.VISIBLE);
-        dialogButton.setText("Ok");
-
-        //setting values
-        name.setText("Name: " + markedNote.getName());
-        address.setText("Address: " + markedNote.getAddress());
-        title_et.setText(markedNote.getTitle());
-        notes_et.setText(markedNote.getDescription());
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-
-            }
-        });
-        dialog.show();
-    }
-
-    void createDialog() {
+    public void createDialog() {
 
         // custom dialog
         dialog = new Dialog(context);
@@ -91,8 +53,8 @@ public class CustomDialog implements AddCustomDialog {
 // set the custom dialog components
         name = dialog.findViewById(R.id.addMarker_name_tv);
         address = dialog.findViewById(R.id.addMarker_addr_tv);
-        title_et = dialog.findViewById(R.id.addMarker_title_et);
-        notes_et = dialog.findViewById(R.id.addMarker_desc_et);
+        title_tv = dialog.findViewById(R.id.addMarker_title_tv);
+        desc_tv = dialog.findViewById(R.id.addMarker_desc_tv);
         dialogButton = dialog.findViewById(R.id.addMarker_btn);
     }
 }

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.ViewHolder> implements Filterable {
 
-    private List<MarkedNote> markedNotes = new ArrayList<>();
+    public List<MarkedNote> markedNotes = new ArrayList<>();
     private Context context;
 
     public AdpaterAllMarkers(Context context) {
@@ -40,9 +40,10 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
 
     @Override
     public void onBindViewHolder(AdpaterAllMarkers.ViewHolder holder, final int position) {
-        holder.title_tv.setText("Title: " + markedNotes.get(position).getTitle());
-        holder.address_tv.setText("Address: " + markedNotes.get(position).getAddress());
-        holder.name_tv.setText("Name: " + markedNotes.get(position).getName());
+
+        holder.title_tv.setText(String.format("%s: %s", context.getString(R.string.title), markedNotes.get(position).getTitle()));
+        holder.address_tv.setText(String.format("%s: %s", context.getString(R.string.address), markedNotes.get(position).getAddress()));
+        holder.name_tv.setText(String.format("%s: %s", context.getString(R.string.name), markedNotes.get(position).getName()));
 
         holder.itemCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +52,6 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
                 customDialog.viewNotes(markedNotes.get(position));
             }
         });
-
     }
 
     @Override

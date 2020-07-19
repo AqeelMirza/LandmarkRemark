@@ -2,34 +2,20 @@ package com.landmarkremark.ui.allmarkers;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.landmarkremark.adapter.AdpaterAllMarkers;
 import com.landmarkremark.MainActivity;
-import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.R;
 import com.landmarkremark.repository.UserRepo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Fragment_AllMarkers extends Fragment {
+public class FragmentAllMarkers extends Fragment {
 
     private RecyclerView recyclerView;
     public AdpaterAllMarkers adpaterAllMarkers;
@@ -45,8 +31,6 @@ public class Fragment_AllMarkers extends Fragment {
         //if not home Fragment hide the Add button
         Activity activity = getActivity();
         MainActivity mainActivity = (MainActivity) activity;
-        //Hiding the FAB
-        mainActivity.hideFab();
         //showing search menu
         mainActivity.getSearchMenuItem().setVisible(true);
         adpaterAllMarkers = new AdpaterAllMarkers(getActivity());
@@ -70,8 +54,12 @@ public class Fragment_AllMarkers extends Fragment {
     }
 
     public void searchItem(String query) {
-
-        adpaterAllMarkers.getFilter().filter(query);
+        if (query.length() > 0) {
+            adpaterAllMarkers.getFilter().filter(query);
+        }else{
+            adpaterAllMarkers.markedNotes.clear();
+            loadAllNotes(adpaterAllMarkers);
+        }
     }
 
 }

@@ -12,7 +12,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
-public class SharedPref {
+public class Utils {
 
     private static SharedPreferences appPrefs;
     private static final String landmarkPref = "LandmarkPref";
@@ -22,7 +22,8 @@ public class SharedPref {
     public static final String MarkedNote = "markedNote";
     public static final String home_label = "Home";
     public static final String myLandmarks_label = "My Landmarks";
-    public static final String Users = "users";
+    public static final String users = "users";
+    public static String username;
 
     private static SharedPreferences getPreferences(Context ctxt) {
         if (appPrefs == null) {
@@ -32,19 +33,19 @@ public class SharedPref {
     }
 
     public static Boolean getIsLoggedIn() {
-        return getPreferences(LandmarkRemark.getContext()).getBoolean(SharedPref.isLoggedIn, false);
+        return getPreferences(LandmarkRemark.getContext()).getBoolean(Utils.isLoggedIn, false);
     }
 
     public static void setIsLoggedIn(Boolean val) {
-        getPreferences(LandmarkRemark.getContext()).edit().putBoolean(SharedPref.isLoggedIn, val).apply();
+        getPreferences(LandmarkRemark.getContext()).edit().putBoolean(Utils.isLoggedIn, val).apply();
     }
 
     public static String getLoggedInUserId() {
-        return getPreferences(LandmarkRemark.getContext()).getString(SharedPref.loggedId, "");
+        return getPreferences(LandmarkRemark.getContext()).getString(Utils.loggedId, "");
     }
 
     public static void setLoggedId(String val) {
-        getPreferences(LandmarkRemark.getContext()).edit().putString(SharedPref.loggedId, val).apply();
+        getPreferences(LandmarkRemark.getContext()).edit().putString(Utils.loggedId, val).apply();
     }
 
     public static void clearPref() {
