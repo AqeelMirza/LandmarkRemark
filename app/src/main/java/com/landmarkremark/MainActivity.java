@@ -4,26 +4,22 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.widget.TextView;
-
 import com.facebook.login.LoginManager;
-import com.google.android.material.navigation.NavigationView;
+import com.landmarkremark.databinding.ActivityMainBinding;
+import com.landmarkremark.databinding.NavHeaderMainBinding;
 import com.landmarkremark.models.User;
 import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.Utils;
 import com.landmarkremark.ui.allmarkers.FragmentAllMarkers;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,14 +28,16 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private User user;
     private MenuItem searchMenuItem;
-    private CoordinatorLayout coordinatorLayout;
-    private TextView navUsername, navEmail;
     private UserRepo userRepo;
+    private ActivityMainBinding activityMainBinding;
+    private NavHeaderMainBinding navHeaderMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = activityMainBinding.getRoot();
+        setContentView(view);
         userRepo = new UserRepo();
         initUiComponents();
         initUser(Utils.getLoggedInUserId());
@@ -49,28 +47,26 @@ public class MainActivity extends AppCompatActivity {
         userRepo.findUser(userId, null, user -> {
             this.user = user;
             Utils.username = user.getName();
-            navEmail.setText(user.getEmail());
-            navUsername.setText(user.getName());
+            navHeaderMainBinding.navEmail.setText(user.getEmail());
+            navHeaderMainBinding.navName.setText(user.getName());
         });
     }
 
     private void initUiComponents() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        setSupportActionBar(activityMainBinding.appbarMain.toolbar);
+
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_myMarkers, R.id.nav_allMarkers)
-                .setDrawerLayout(drawer)
+                .setDrawerLayout(activityMainBinding.drawerLayout)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-        View headerView = navigationView.getHeaderView(0);
+        NavigationUI.setupWithNavController(activityMainBinding.navView, navController);
+        navHeaderMainBinding = NavHeaderMainBinding.bind(activityMainBinding.navView.getHeaderView(0));
+       /* //View headerView = activityMainBinding.navView.getHeaderView(0);
         navUsername = headerView.findViewById(R.id.nav_name);
-        navEmail = headerView.findViewById(R.id.nav_email);
+        navEmail = headerView.findViewById(R.id.nav_email);*/
     }
 
     @Override

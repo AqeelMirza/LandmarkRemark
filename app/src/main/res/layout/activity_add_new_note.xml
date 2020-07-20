@@ -11,15 +11,15 @@
         android:id="@+id/addMarker_name_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/min_margin"
+        android:layout_margin="@dimen/ten_margin"
         android:gravity="center"
-        android:padding="@dimen/min_margin"
+        android:padding="@dimen/ten_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_margin">
+        android:padding="@dimen/ten_margin">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/addMarker_title_et"
@@ -35,7 +35,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_margin">
+        android:padding="@dimen/ten_margin">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/addMarker_desc_et"
@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:padding="@dimen/min_margin"
+        android:padding="@dimen/ten_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <Button
@@ -62,8 +62,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/min_margin"
-        android:padding="@dimen/min_margin"
+        android:layout_margin="@dimen/ten_margin"
+        android:padding="@dimen/ten_margin"
         android:text="@string/submit"></Button>
 
 

@@ -9,7 +9,7 @@
         android:id="@+id/addMarker_name_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_margin"
+        android:padding="@dimen/ten_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/colorPrimary" />
 
@@ -22,14 +22,14 @@
         android:id="@+id/addMarker_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_margin"
+        android:padding="@dimen/ten_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
         android:id="@+id/addMarker_desc_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_margin"
+        android:padding="@dimen/ten_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
@@ -37,7 +37,7 @@
         android:id="@+id/addMarker_addr_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_margin"
+        android:padding="@dimen/ten_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <View
@@ -51,8 +51,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/min_margin"
-        android:padding="@dimen/min_margin"
+        android:layout_margin="@dimen/ten_margin"
+        android:padding="@dimen/ten_margin"
         android:text="@string/ok"></Button>
 
 
