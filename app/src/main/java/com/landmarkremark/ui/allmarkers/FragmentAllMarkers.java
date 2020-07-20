@@ -1,23 +1,24 @@
 package com.landmarkremark.ui.allmarkers;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.landmarkremark.adapter.AdpaterAllMarkers;
+
+import com.landmarkremark.adapter.AdapterAllMarkers;
 import com.landmarkremark.MainActivity;
 import com.landmarkremark.databinding.FragmentAllmarkersBinding;
 import com.landmarkremark.repository.UserRepo;
 
 public class FragmentAllMarkers extends Fragment {
 
-    public AdpaterAllMarkers adpaterAllMarkers;
+    public AdapterAllMarkers adapterAllMarkers;
     private UserRepo userRepo;
     private FragmentAllmarkersBinding fragmentAllMarkersBinding;
 
@@ -27,18 +28,22 @@ public class FragmentAllMarkers extends Fragment {
         View root = fragmentAllMarkersBinding.getRoot();
 
         userRepo = new UserRepo();
-        initRecyclerView();
 
-        //if not home Fragment hide the Add button
-        Activity activity = getActivity();
-        MainActivity mainActivity = (MainActivity) activity;
+        initRecyclerView();
         //showing search menu
-        mainActivity.getSearchMenuItem().setVisible(true);
-        adpaterAllMarkers = new AdpaterAllMarkers(getActivity());
-        loadAllNotes(adpaterAllMarkers);
-        fragmentAllMarkersBinding.allMarkerRec.setAdapter(adpaterAllMarkers);
+        showSearchMenu();
+
+        //Setting adapter to RecyclerView
+        adapterAllMarkers = new AdapterAllMarkers(getActivity());
+        loadAllNotes(adapterAllMarkers);
+        fragmentAllMarkersBinding.allMarkerRec.setAdapter(adapterAllMarkers);
 
         return root;
+    }
+
+    private void showSearchMenu() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.getSearchMenuItem().setVisible(true);
     }
 
     private void initRecyclerView() {
@@ -47,21 +52,24 @@ public class FragmentAllMarkers extends Fragment {
         fragmentAllMarkersBinding.allMarkerRec.setLayoutManager(layoutManager);
     }
 
-    private void loadAllNotes(AdpaterAllMarkers adpaterAllMarkers) {
+    //Loading All notes from Database
+    private void loadAllNotes(AdapterAllMarkers adapterAllMarkers) {
         userRepo.findAllNotes(note -> {
-            adpaterAllMarkers.addNote(note);
-            adpaterAllMarkers.notifyDataSetChanged();
+            adapterAllMarkers.addNote(note);
+            adapterAllMarkers.notifyDataSetChanged();
         });
     }
 
+    //For search
     public void searchItem(String query) {
         if (query.length() > 0) {
-            adpaterAllMarkers.getFilter().filter(query);
+            adapterAllMarkers.getFilter().filter(query);
         } else {
-            adpaterAllMarkers.markedNotes.clear();
-            loadAllNotes(adpaterAllMarkers);
+            adapterAllMarkers.markedNotes.clear();
+            loadAllNotes(adapterAllMarkers);
         }
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

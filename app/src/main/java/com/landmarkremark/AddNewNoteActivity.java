@@ -76,7 +76,7 @@ public class AddNewNoteActivity extends AppCompatActivity {
         MarkedNote note = new MarkedNote();
         note.setTitle(title);
         note.setDescription(desc);
-        note.setName(Utils.username);
+        note.setUserName(Utils.username);
         note.setAddress(addrs);
         note.setLatitude(String.valueOf(location.getLatitude()));
         note.setLongitude(String.valueOf(location.getLongitude()));

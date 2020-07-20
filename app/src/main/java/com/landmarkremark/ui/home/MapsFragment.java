@@ -29,6 +29,7 @@ import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.R;
 import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.CustomDialog;
+import com.landmarkremark.utils.ErrorDialog;
 import com.landmarkremark.utils.Utils;
 
 import java.util.ArrayList;
@@ -88,17 +89,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     private void setMarkerOnCurrentLocation() {
         //getting current location
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (location != null) {
             LatLng myLoc = new LatLng(location.getLatitude(), location.getLongitude());
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 5));
-            googleMap.addMarker(new MarkerOptions().position(myLoc).title(getString(R.string.click_marker))).showInfoWindow();
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(17)                   // Sets the zoom
-                    .build();                   // Creates a CameraPosition from the builder
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            setUpMarker(getString(R.string.click_marker), googleMap, myLoc);
             //setting onClick to Add Marker
             setGoogleMapClickListener(googleMap, null, location, 1);
         }
@@ -113,9 +108,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void populateNotesAndSetupGoogleMap(String userId, GoogleMap googleMap, List<MarkedNote> myMarked) {
         userRepo.findUserNotes(userId, note -> {
             myMarked.add(note);
-            addMarkerOnMap(note, googleMap);
+            setUpMarker(note.getTitle(), googleMap, getLatLng(note));
             setGoogleMapClickListener(googleMap, myMarked, null, 2);
-        });
+        }, () -> openDialog(getString(R.string.alert_title), getString(R.string.no_note_alert_message)));
     }
 
     //onClick on Markers
@@ -137,30 +132,27 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    //getting LatLng value
     private LatLng getLatLng(MarkedNote markedNote) {
         Double lat = Double.valueOf(markedNote.getLatitude());
         Double lon = Double.valueOf(markedNote.getLongitude());
         return new LatLng(lat, lon);
     }
 
-    //setting users marker on Map
-    public Marker addMarkerOnMap(MarkedNote note, GoogleMap googleMap) {
-        Double lat = Double.valueOf(note.getLatitude());
-        Double lon = Double.valueOf(note.getLongitude());
+    private void setUpMarker(String title, GoogleMap googleMap, LatLng latLng) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(lat, lon))      // Sets the center of the map to location user
+                .target(latLng)      // Sets the center of the map to location user
                 .zoom(15)                   // Sets the zoom
                 .bearing(90)                // Sets the orientation of the camera to east
                 .build();                   // Creates a CameraPosition from the builder
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        return googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(lat, lon))
-                .anchor(0.5f, 0.5f)
-                .title(note.getTitle())
-                .snippet(note.getDescription()));
+        googleMap.addMarker(new MarkerOptions().position(latLng).title(title)).showInfoWindow();
     }
 
-    private void returnToMain() {
-
+    //Display Error Dialog
+    public void openDialog(String title, String message) {
+        ErrorDialog alertDialog = new ErrorDialog(title, message);
+        alertDialog.show(getChildFragmentManager(), this.getClass().getName());
     }
+
 }

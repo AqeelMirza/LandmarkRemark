@@ -17,12 +17,12 @@ import com.landmarkremark.utils.CustomDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.ViewHolder> implements Filterable {
+public class AdapterAllMarkers extends RecyclerView.Adapter<AdapterAllMarkers.ViewHolder> implements Filterable {
 
     public List<MarkedNote> markedNotes = new ArrayList<>();
     private Context context;
 
-    public AdpaterAllMarkers(Context context) {
+    public AdapterAllMarkers(Context context) {
         this.context = context;
     }
 
@@ -31,18 +31,17 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
     }
 
     @Override
-    public AdpaterAllMarkers.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(RecviewItemsBinding.inflate(LayoutInflater.from(parent.getContext()),
-                parent, false));
+    public AdapterAllMarkers.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(RecviewItemsBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
-    public void onBindViewHolder(AdpaterAllMarkers.ViewHolder holder, final int position) {
-
+    public void onBindViewHolder(AdapterAllMarkers.ViewHolder holder, final int position) {
         holder.recviewItemsBinding.itemTitle.setText(String.format("%s: %s", context.getString(R.string.title), markedNotes.get(position).getTitle()));
-        holder.recviewItemsBinding.itemAddress.setText(String.format("Address: %s", markedNotes.get(position).getAddress()));
-        holder.recviewItemsBinding.itemUsername.setText(String.format("Name: %s", markedNotes.get(position).getName()));
+        holder.recviewItemsBinding.itemAddress.setText(String.format("%s: %s", context.getString(R.string.address), markedNotes.get(position).getAddress()));
+        holder.recviewItemsBinding.itemUsername.setText(String.format("%s: %s", context.getString(R.string.name), markedNotes.get(position).getUserName()));
         holder.recviewItemsBinding.itemCardView.setOnClickListener(view -> {
+            //calling custom dialog to display Notes
             CustomDialog customDialog = new CustomDialog(context);
             customDialog.viewNotes(markedNotes.get(position));
         });
@@ -60,31 +59,37 @@ public class AdpaterAllMarkers extends RecyclerView.Adapter<AdpaterAllMarkers.Vi
 
     private Filter searchFilter = new Filter() {
         @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
+        protected FilterResults performFiltering(CharSequence filterChar) {
             ArrayList<MarkedNote> filteredList = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0) {
+            //checking for filterChar value
+            if (filterChar == null || filterChar.length() == 0) {
                 filteredList.addAll(markedNotes);
             } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+                String filterPattern = filterChar.toString().toLowerCase().trim();
                 for (MarkedNote item : markedNotes) {
-                    if (item.getName().toLowerCase().contains(filterPattern) || item.getTitle().toLowerCase().contains(filterPattern)) {
+                    //checking for UserName or Title of the Note
+                    if (item.getUserName().toLowerCase().contains(filterPattern) || item.getTitle().toLowerCase().contains(filterPattern)) {
+                        //add to filtered list
                         filteredList.add(item);
                     }
                 }
             }
             FilterResults results = new FilterResults();
             results.values = filteredList;
+            results.count = filteredList.size();
             return results;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
+            //checking if it contains notes
             if (markedNotes.size() > 0) {
                 markedNotes.clear();
                 markedNotes.addAll((ArrayList) results.values);
                 notifyDataSetChanged();
             } else {
-                Toast.makeText(context, "No item for search result", Toast.LENGTH_SHORT).show();
+                //Message for no Items Found
+                Toast.makeText(context, "No items for search result", Toast.LENGTH_SHORT).show();
             }
         }
     };

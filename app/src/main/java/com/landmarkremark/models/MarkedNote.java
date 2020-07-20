@@ -1,12 +1,9 @@
 package com.landmarkremark.models;
 
-
-import com.google.android.gms.maps.model.LatLng;
-
 public class MarkedNote {
 
     private String id;
-    private String name;
+    private String userName;
     private String title;
     private String description;
     private String address;
@@ -29,12 +26,12 @@ public class MarkedNote {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getTitle() {

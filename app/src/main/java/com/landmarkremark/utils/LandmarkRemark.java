@@ -7,8 +7,6 @@ public class LandmarkRemark extends Application {
 
     private static LandmarkRemark instance;
 
-  //  private RequestQueue mRequestQueue;
-
     public LandmarkRemark() {
         instance = this;
     }

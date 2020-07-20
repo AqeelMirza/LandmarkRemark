@@ -1,6 +1,5 @@
 package com.landmarkremark;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -8,13 +7,9 @@ import android.view.Menu;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.models.User;
 import com.landmarkremark.repository.UserRepo;
-import com.landmarkremark.utils.CustomDialog;
 import com.landmarkremark.utils.Utils;
 import com.landmarkremark.ui.allmarkers.FragmentAllMarkers;
 

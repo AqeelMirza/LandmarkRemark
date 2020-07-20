@@ -25,6 +25,7 @@
     <!--Facebook App ID-->
     <string name="facebook_app_id">2878840682225573</string>
     <string name="fb_login_protocol_scheme">fb2878840682225573</string>
+
     <string name="title_activity_maps">Map</string>
     <string name="add_new_note">Add New Note</string>
     <string name="success">Successfully Added.</string>
@@ -33,5 +34,8 @@
     <string name="not_auth">You are not authorized.</string>
     <string name="granted">Permission granted</string>
     <string name="denied">Permission denied</string>
+    <string name="alert_title">Alert</string>
+    <string name="delete_alert_message">Sorry, you cannot delete other user\'s note.</string>
+    <string name="no_note_alert_message">Sorry, no notes found.</string>
 
 </resources>

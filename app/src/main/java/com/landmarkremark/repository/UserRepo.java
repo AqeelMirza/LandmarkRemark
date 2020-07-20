@@ -1,7 +1,6 @@
 package com.landmarkremark.repository;
 
 import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,14 +20,19 @@ public class UserRepo {
         this.firebaseDatabase = FirebaseDatabase.getInstance();
     }
 
-    public void findUserNotes(String userId, Consumer<MarkedNote> onSuccess) {
-        DatabaseReference databaseReference = firebaseDatabase.getReference("users").getRef().child(userId).child("markedNote");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void findUserNotes(String userId, Consumer<MarkedNote> onSuccess, Runnable noNotesFound) {
+        DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users).getRef().child(userId).child(Utils.MarkedNote);
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot noteSnapshot : dataSnapshot.getChildren()) {
-                    Log.i("User notes", noteSnapshot.toString());
-                    onSuccess.accept(noteSnapshot.getValue(MarkedNote.class));
+                if (dataSnapshot.exists()) {
+                    Log.i("sdfsddf", "sdfsfdsfdsfdsfsd");
+                    for (DataSnapshot noteSnapshot : dataSnapshot.getChildren()) {
+                        Log.i("User notes", noteSnapshot.toString());
+                        onSuccess.accept(noteSnapshot.getValue(MarkedNote.class));
+                    }
+                } else {
+                    noNotesFound.run();
                 }
             }
 
@@ -52,15 +56,15 @@ public class UserRepo {
                     notesRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot childSnapshot : dataSnapshot.child("markedNote").getChildren()) {
-                                MarkedNote markedNote = childSnapshot.getValue(MarkedNote.class);
-                                markedNoteConsumer.accept(markedNote);
-                            }
+                                for (DataSnapshot childSnapshot : dataSnapshot.child("markedNote").getChildren()) {
+                                    MarkedNote markedNote = childSnapshot.getValue(MarkedNote.class);
+                                    markedNoteConsumer.accept(markedNote);
+                                }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.d("TAG", "Read failed");
+                            throw new RuntimeException("Failed to find All notes", databaseError.toException());
                         }
                     });
                 }
@@ -68,7 +72,7 @@ public class UserRepo {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("TAG", "Read failed");
+                throw new RuntimeException("Failed to find All notes", databaseError.toException());
             }
         });
     }
@@ -115,9 +119,8 @@ public class UserRepo {
     }
 
     public void createNewUser(User user) {
-        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
+        DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users);
         //Insert user in database
         databaseReference.child(user.getId()).setValue(user);
     }
-
 }

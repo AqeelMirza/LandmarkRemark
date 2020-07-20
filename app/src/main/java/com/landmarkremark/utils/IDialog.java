@@ -1,9 +1,8 @@
 package com.landmarkremark.utils;
 
 import com.landmarkremark.models.MarkedNote;
-import com.landmarkremark.models.User;
 
-public interface ICustomDialog {
+public interface IDialog {
 
     //Viewing Notes
     void viewNotes(MarkedNote note);
