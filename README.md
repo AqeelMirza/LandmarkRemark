@@ -13,33 +13,39 @@ user-name
 
 ## Implementation 
 1. Facebook Login feature to create a user, better than tradition way of long user forms.
-2. NavigationView displays the Name and Email address of the logged in User.
-3. Displaying the location and saved markers notes using Google Maps.
-4. Tap on the Marker on Google Maps to add Notes.
-5. View Binding for NullPointer safety and Type safety.
-6. Firebase Realtime Database to save notes.
-7. Designed Custom Dialog to view Notes.
-8. Recyclerview to display the list of Notes.
-9. SearchView to find the specific note by Name or Title.
+2. Implemented View Binding to avoid NullPointer Exceptions and Type safety.
+3. Checking for Runtime Permissions to get the current location of the device.
+4. Check if the location settings are ON, redirect to the settings page to enable location on the device. 
+5. NavigationView header displays the Name and Email address of the logged in User.
+6. Displaying the current location using Google Maps and allowing to save note.
+7. Implemented Firebase Realtime Database to save notes.
+8. User can view it's notes on 'My Landmarks' and all notes on 'All Landmarks On Maps' as markers on Google Maps and more information can be viewed by clicking on a specific marker.
+9. Implemented Consumer Object to pass functions as asynchronous callbacks to find or load data from Firebase Database. 
+10. Designed Custom Dialog to view notes.
+11. All Notes is also displayed as List using Recyclerview.
+12. SearchView to find the specific note by Name or Title.
+13. Logout functionality, logs out from Facebook and also clears Shared Preference data.
 
 ## Technologies & Tool used
 1. Facebook Login.
 2. Google Maps.
 3. Firebase Realtime Database.
-4. Java
+4. Java 1.8
 5. Android Studio 4.0
 
 ## Testing
 1. Application is tested on Google Pixel 2.
 2. On launch, Login page is loaded and Facebook login is used.
 3. Runtime location permission is requested to get the current location of the user.
-4. User can see the loggedIn user details on Navigation Header, i.e Username and Email.
-5. Current location is Marked on Google Maps and Marker is used to add Notes at the location.
+4. User can see the logged In user details on Navigation Header, i.e Username and Email.
+5. Current location is Marked on Google Maps and Marker is used to add Notes at current location.
 6. After successfully saving the Note in the Firebase Realtime Database, the user gets a Toast message.
-7. The User's notes are displayed on Google Maps and can be viewed at 'My Landmarks' tab in Navigation Drawer.
-8. A list of notes are displayed in 'All Landmarks' tab from all users.
-9. Search option is provided to filter this list by 'Name' of the user or 'Title' of the note.
-10. Logout options is provided.
+7. User's notes are displayed on Google Maps, can be viewed at 'My Landmarks' tab in Navigation Drawer.
+8. All users notes are also displayed on Google Maps, can be viewed at 'All Landmarks on Map' tab in Navigation Drawer. 
+9. More information of notes can be viewed by clicking on the marker.
+10. List of notes are displayed in 'All Landmarks' tab from all users.
+11. Search option is provided to filter this list by 'Name' of the user or 'Title' of the note.
+12. Logout option is provided.
 
 ## Limitations
 1. User cannot access the application if the Location permission is not granted.
@@ -53,7 +59,8 @@ user-name
 4. Testing and code optimization - 3hrs
 5. Comments and Documentation - 1hrs
 
-
+## Screen Recording and Screenshots
+Working of Landmark Remark App on Google Pixel 2 can be viewed under ScreenRecording(Video) and Screenshots Folders.
 
 
 
