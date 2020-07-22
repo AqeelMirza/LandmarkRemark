@@ -22,6 +22,7 @@ public class Utils {
     public static final String MarkedNote = "markedNote";
     public static final String home_label = "Home";
     public static final String myLandmarks_label = "My Landmarks";
+    public static final String allLandmarks_label = "All Landmarks On Map";
     public static final String users = "users";
     public static String username;
 

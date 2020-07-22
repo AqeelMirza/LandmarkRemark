@@ -37,9 +37,9 @@ public class AdapterAllMarkers extends RecyclerView.Adapter<AdapterAllMarkers.Vi
 
     @Override
     public void onBindViewHolder(AdapterAllMarkers.ViewHolder holder, final int position) {
-        holder.recviewItemsBinding.itemTitle.setText(String.format("%s: %s", context.getString(R.string.title), markedNotes.get(position).getTitle()));
-        holder.recviewItemsBinding.itemAddress.setText(String.format("%s: %s", context.getString(R.string.address), markedNotes.get(position).getAddress()));
-        holder.recviewItemsBinding.itemUsername.setText(String.format("%s: %s", context.getString(R.string.name), markedNotes.get(position).getUserName()));
+        holder.recviewItemsBinding.itemTitle.setText(String.format("%s %s", context.getString(R.string.title), markedNotes.get(position).getTitle()));
+        holder.recviewItemsBinding.itemAddress.setText(String.format("%s %s", context.getString(R.string.address), markedNotes.get(position).getAddress()));
+        holder.recviewItemsBinding.itemUsername.setText(markedNotes.get(position).getUserName());
         holder.recviewItemsBinding.itemCardView.setOnClickListener(view -> {
             //calling custom dialog to display Notes
             CustomDialog customDialog = new CustomDialog(context);

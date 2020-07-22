@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.landmarkremark.databinding.ActivityLoginBinding;
+import com.landmarkremark.databinding.ActivityMainBinding;
 import com.landmarkremark.models.User;
 import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.Utils;
@@ -37,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     //Facebook Callback
     private CallbackManager mCallbackManager;
-    private LoginButton mLoginButton;
+    private ActivityLoginBinding activityLoginBinding;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -51,7 +54,9 @@ public class LoginActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_login);
+        activityLoginBinding = ActivityLoginBinding.inflate(getLayoutInflater());
+        View view = activityLoginBinding.getRoot();
+        setContentView(view);
 
         FacebookLoginOnClick();
 
@@ -65,15 +70,13 @@ public class LoginActivity extends AppCompatActivity {
     private void FacebookLoginOnClick() {
         mCallbackManager = CallbackManager.Factory.create();
 
-        mLoginButton = findViewById(R.id.fb_login_btn);
-
         // Set the initial permissions to request from the user while logging in
-        mLoginButton.setPermissions(Arrays.asList(EMAIL, "public_profile"));
+        activityLoginBinding.fbLoginBtn.setPermissions(Arrays.asList(EMAIL, "public_profile"));
 
-        mLoginButton.setAuthType(AUTH_TYPE);
+        activityLoginBinding.fbLoginBtn.setAuthType(AUTH_TYPE);
 
         // Register a callback to respond to the user
-        mLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        activityLoginBinding.fbLoginBtn.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 setResult(RESULT_OK);

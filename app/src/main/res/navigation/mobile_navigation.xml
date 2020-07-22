@@ -18,6 +18,12 @@
         tools:layout="@layout/activity_maps" />
 
     <fragment
+        android:id="@+id/nav_allMarkers_onMap"
+        android:name="com.landmarkremark.ui.home.MapsFragment"
+        android:label="@string/menu_allmarkers_onmap"
+        tools:layout="@layout/activity_maps" />
+
+    <fragment
         android:id="@+id/nav_allMarkers"
         android:name="com.landmarkremark.ui.allmarkers.FragmentAllMarkers"
         android:label="@string/menu_allmarker"

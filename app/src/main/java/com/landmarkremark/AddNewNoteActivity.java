@@ -56,7 +56,7 @@ public class AddNewNoteActivity extends AppCompatActivity {
     private void setNameAndAddress() {
         address = getAddress(location);
         activityAddNewNoteBinding.addMarkerNameHeader.setText(String.format("%s: %s", getString(R.string.name), Utils.username));
-        activityAddNewNoteBinding.addMarkerAddressTv.setText(String.format("%s: %s", getString(R.string.address), address));
+        activityAddNewNoteBinding.addMarkerAddressTv.setText(String.format("%s %s", getString(R.string.address), address));
     }
 
     //getting the location Object from prev fragment

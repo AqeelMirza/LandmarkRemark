@@ -13,8 +13,12 @@
             android:icon="@drawable/ic_location_on_24"
             android:title="@string/menu_mymarkers" />
         <item
-            android:id="@+id/nav_allMarkers"
+            android:id="@+id/nav_allMarkers_onMap"
             android:icon="@drawable/ic_map_24"
+            android:title="@string/menu_allmarkers_onmap" />
+        <item
+            android:id="@+id/nav_allMarkers"
+            android:icon="@drawable/ic_list_all"
             android:title="@string/menu_allmarker" />
     </group>
 </menu>

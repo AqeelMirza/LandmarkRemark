@@ -83,6 +83,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         } else if (mainActivity.getNavController().getCurrentDestination().getLabel().equals(Utils.myLandmarks_label)) {
             List<MarkedNote> myMarked = new ArrayList<>();
             populateNotesAndSetupGoogleMap(Utils.getLoggedInUserId(), googleMap, myMarked);
+        } else if (mainActivity.getNavController().getCurrentDestination().getLabel().equals(Utils.allLandmarks_label)) {
+            List<MarkedNote> allMarked = new ArrayList<>();
+            loadAllNotes(googleMap, allMarked);
         }
     }
 
@@ -93,7 +96,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (location != null) {
             LatLng myLoc = new LatLng(location.getLatitude(), location.getLongitude());
-            setUpMarker(getString(R.string.click_marker), googleMap, myLoc);
+            setUpMarker(getString(R.string.click_marker), googleMap, myLoc, 1);
             //setting onClick to Add Marker
             setGoogleMapClickListener(googleMap, null, location, 1);
         }
@@ -108,9 +111,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void populateNotesAndSetupGoogleMap(String userId, GoogleMap googleMap, List<MarkedNote> myMarked) {
         userRepo.findUserNotes(userId, note -> {
             myMarked.add(note);
-            setUpMarker(note.getTitle(), googleMap, getLatLng(note));
+            setUpMarker(note.getTitle(), googleMap, getLatLng(note), 2);
             setGoogleMapClickListener(googleMap, myMarked, null, 2);
         }, () -> openDialog(getString(R.string.alert_title), getString(R.string.no_note_alert_message)));
+    }
+
+    //Loading All notes from Database
+    private void loadAllNotes(GoogleMap googleMap, List<MarkedNote> allMarked) {
+        userRepo.findAllNotes(note -> {
+            allMarked.add(note);
+            setUpMarker(note.getTitle(), googleMap, getLatLng(note), 2);
+            setGoogleMapClickListener(googleMap, allMarked, null, 2);
+        });
     }
 
     //onClick on Markers
@@ -139,14 +151,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return new LatLng(lat, lon);
     }
 
-    private void setUpMarker(String title, GoogleMap googleMap, LatLng latLng) {
+    private void setUpMarker(String title, GoogleMap googleMap, LatLng latLng, int type) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)      // Sets the center of the map to location user
-                .zoom(15)                   // Sets the zoom
+                .zoom(12)                   // Sets the zoom
                 .bearing(90)                // Sets the orientation of the camera to east
                 .build();                   // Creates a CameraPosition from the builder
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        googleMap.addMarker(new MarkerOptions().position(latLng).title(title)).showInfoWindow();
+        //Condition for displaying title message
+        if (type == 1) {
+            googleMap.addMarker(new MarkerOptions().position(latLng).title(title)).showInfoWindow();
+        } else {
+            googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
+        }
     }
 
     //Display Error Dialog

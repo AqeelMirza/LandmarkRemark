@@ -12,15 +12,16 @@
     <!--Nav-->
     <string name="menu_home">Home</string>
     <string name="menu_mymarkers">My Landmarks</string>
+    <string name="menu_allmarkers_onmap">All Landmarks On Map</string>
     <string name="menu_allmarker">All Landmarks</string>
 
     <!--Add Marker-->
     <string name="ok">OK</string>
     <string name="submit">Submit</string>
     <string name="name">Name</string>
-    <string name="address">Address</string>
-    <string name="title">Title</string>
-    <string name="notes">Notes(Description)</string>
+    <string name="address">Address: </string>
+    <string name="title">Title: </string>
+    <string name="notes">Notes(Description): </string>
 
     <!--Facebook App ID-->
     <string name="facebook_app_id">2878840682225573</string>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+
 import com.facebook.login.LoginManager;
 import com.landmarkremark.databinding.ActivityMainBinding;
 import com.landmarkremark.databinding.NavHeaderMainBinding;
@@ -57,16 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_myMarkers, R.id.nav_allMarkers)
+                R.id.nav_home, R.id.nav_myMarkers, R.id.nav_allMarkers_onMap, R.id.nav_allMarkers)
                 .setDrawerLayout(activityMainBinding.drawerLayout)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(activityMainBinding.navView, navController);
         navHeaderMainBinding = NavHeaderMainBinding.bind(activityMainBinding.navView.getHeaderView(0));
-       /* //View headerView = activityMainBinding.navView.getHeaderView(0);
-        navUsername = headerView.findViewById(R.id.nav_name);
-        navEmail = headerView.findViewById(R.id.nav_email);*/
     }
 
     @Override
@@ -131,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }

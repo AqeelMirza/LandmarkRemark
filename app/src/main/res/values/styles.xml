@@ -14,7 +14,7 @@
     </style>
 
     <!--Custom Dialog Style-->
-    <style name="Dialog" parent="Theme.AppCompat.Dialog">
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowIsFloating">true</item>
     </style>
