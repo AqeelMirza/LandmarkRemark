@@ -40,9 +40,9 @@
 6. After successfully saving the Note in the Firebase Realtime Database, the user gets a Toast message.
 7. If no note is added an alert is displayed as no notes found.
 8. User's notes are displayed on Google Maps, can be viewed at 'My Landmarks' tab in Navigation Drawer.
-9. All users notes are also displayed on Google Maps, can be viewed at 'All Landmarks on Map' tab in Navigation Drawer. 
+9. All users notes are also displayed on Google Maps, can be viewed at 'All Landmarks on Map' tab in Navigation View. 
 10. More information of notes can be viewed by clicking on the marker.
-11. List of notes are displayed in 'All Landmarks' tab from all users.
+11. List of notes are displayed from all users.
 12. Search option is provided to filter this list by 'Name' of the user or 'Title' of the note.
 13. Logout option is provided.
 
@@ -55,11 +55,16 @@
 1. Facebook Login and create User - 1.5hrs
 2. Setup Google Maps and Markers - 2hrs
 3. Save Notes and display list of Notes - 2hrs
-4. Testing and code optimization - 3hrs
-5. Comments and Documentation - 1hrs
+4. Search landmark - 1hr
+5. Testing and code optimization - 3hrs
+6. Comments and Documentation - 1hrs
 
 ## Screen Recording and Screenshots
 Recording of running Landmark Remark App on Google Pixel 2 can be viewed under ScreenRecording(Video) and Screenshots Folders.
+
+## APK
+An APK file is provided under APK folder.
+
 
 
 

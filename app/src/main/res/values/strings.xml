@@ -13,7 +13,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_mymarkers">My Landmarks</string>
     <string name="menu_allmarkers_onmap">All Landmarks On Map</string>
-    <string name="menu_allmarker">All Landmarks</string>
+    <string name="menu_searchmarker">Search Landmarks</string>
 
     <!--Add Marker-->
     <string name="ok">OK</string>

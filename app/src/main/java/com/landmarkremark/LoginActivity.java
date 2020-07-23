@@ -20,9 +20,7 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.landmarkremark.databinding.ActivityLoginBinding;
-import com.landmarkremark.databinding.ActivityMainBinding;
 import com.landmarkremark.models.User;
 import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.Utils;
@@ -112,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    //on Success result from Facebook
     private void onLoginSuccess(JSONObject object) {
         final User user;
         try {
@@ -125,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         requestPermissionAndNavigate();
     }
 
+    //syncing with database to find user
     private void syncDb(User newUser) {
         UserRepo userRepo = new UserRepo();
         userRepo.findUser(newUser.getId(), newUser, user -> {

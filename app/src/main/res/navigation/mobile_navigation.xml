@@ -24,8 +24,8 @@
         tools:layout="@layout/activity_maps" />
 
     <fragment
-        android:id="@+id/nav_allMarkers"
-        android:name="com.landmarkremark.ui.allmarkers.FragmentAllMarkers"
-        android:label="@string/menu_allmarker"
+        android:id="@+id/nav_searchMarkers"
+        android:name="com.landmarkremark.ui.searchmarkers.FragmentSearchMarkers"
+        android:label="@string/menu_searchmarker"
         tools:layout="@layout/fragment_allmarkers" />
 </navigation>

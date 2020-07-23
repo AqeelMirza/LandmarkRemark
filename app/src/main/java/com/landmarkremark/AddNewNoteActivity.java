@@ -1,11 +1,13 @@
 package com.landmarkremark;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
+
 import com.landmarkremark.databinding.ActivityAddNewNoteBinding;
 import com.landmarkremark.models.MarkedNote;
 import com.landmarkremark.repository.UserRepo;
@@ -49,10 +51,12 @@ public class AddNewNoteActivity extends AppCompatActivity {
         });
     }
 
+    //popping back to MainActivity
     private void moveToMain() {
         finish();
     }
 
+    //setting Name and Address
     private void setNameAndAddress() {
         address = getAddress(location);
         activityAddNewNoteBinding.addMarkerNameHeader.setText(String.format("%s: %s", getString(R.string.name), Utils.username));
@@ -71,7 +75,7 @@ public class AddNewNoteActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.success, Toast.LENGTH_SHORT).show();
     }
 
-    //setting the Note obj
+    //setting the Note object
     private MarkedNote setNote(Location location, String title, String desc, String addrs) {
         MarkedNote note = new MarkedNote();
         note.setTitle(title);

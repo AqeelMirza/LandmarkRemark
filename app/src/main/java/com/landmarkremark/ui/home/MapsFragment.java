@@ -102,12 +102,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    //Navigating to AddNewNoteActivity
     private void addNewNotes(Location location) {
         Intent in = new Intent(getActivity(), AddNewNoteActivity.class);
         in.putExtra("location", location);
         startActivity(in);
     }
 
+    //Getting notes and setting up Google Maps
     private void populateNotesAndSetupGoogleMap(String userId, GoogleMap googleMap, List<MarkedNote> myMarked) {
         userRepo.findUserNotes(userId, note -> {
             myMarked.add(note);
@@ -130,6 +132,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                //type 2 is for Viewing Notes
                 if (type == 2) {
                     CustomDialog customDialog = new CustomDialog(getActivity());
                     for (MarkedNote markedNote : notes) {
@@ -137,6 +140,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             customDialog.viewNotes(markedNote);
                     }
                 } else if (type == 1) {
+                    //type 1 is to add a new note at Location
                     addNewNotes(location);
                 }
                 return true;

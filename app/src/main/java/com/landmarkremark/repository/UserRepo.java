@@ -1,6 +1,7 @@
 package com.landmarkremark.repository;
 
 import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +21,14 @@ public class UserRepo {
         this.firebaseDatabase = FirebaseDatabase.getInstance();
     }
 
+    //For creating new user
+    public void createNewUser(User user) {
+        DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users);
+        //Insert user in database
+        databaseReference.child(user.getId()).setValue(user);
+    }
+
+    //Finding Notes of a specific User with its userId
     public void findUserNotes(String userId, Consumer<MarkedNote> onSuccess, Runnable noNotesFound) {
         DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users).getRef().child(userId).child(Utils.MarkedNote);
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -43,6 +52,7 @@ public class UserRepo {
         });
     }
 
+    //Finding all notes from all users
     public void findAllNotes(Consumer<MarkedNote> markedNoteConsumer) {
         final DatabaseReference userRef = firebaseDatabase.getReference().child(Utils.users);
         userRef.addValueEventListener(new ValueEventListener() {
@@ -56,10 +66,10 @@ public class UserRepo {
                     notesRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot childSnapshot : dataSnapshot.child("markedNote").getChildren()) {
-                                    MarkedNote markedNote = childSnapshot.getValue(MarkedNote.class);
-                                    markedNoteConsumer.accept(markedNote);
-                                }
+                            for (DataSnapshot childSnapshot : dataSnapshot.child("markedNote").getChildren()) {
+                                MarkedNote markedNote = childSnapshot.getValue(MarkedNote.class);
+                                markedNoteConsumer.accept(markedNote);
+                            }
                         }
 
                         @Override
@@ -77,6 +87,7 @@ public class UserRepo {
         });
     }
 
+    //adding notes
     public void addNotesToDb(MarkedNote markedNote) {
         markedNote.setId(String.valueOf(Utils.createRandomInt()));
 
@@ -86,6 +97,7 @@ public class UserRepo {
 
     }
 
+    //Finding a user to check its existence
     public void findUser(String userId, User user, Consumer<User> onUserFound) {
         //getting the reference of all users
         DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users);
@@ -108,6 +120,7 @@ public class UserRepo {
         });
     }
 
+    //getting a user with its Id
     private User getUserById(DataSnapshot userData, String id) {
         for (DataSnapshot userSnapshot : userData.getChildren()) {
             User user = userSnapshot.getValue(User.class);
@@ -118,9 +131,5 @@ public class UserRepo {
         return null;
     }
 
-    public void createNewUser(User user) {
-        DatabaseReference databaseReference = firebaseDatabase.getReference(Utils.users);
-        //Insert user in database
-        databaseReference.child(user.getId()).setValue(user);
-    }
+
 }

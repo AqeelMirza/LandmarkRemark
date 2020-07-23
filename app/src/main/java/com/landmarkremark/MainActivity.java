@@ -11,7 +11,7 @@ import com.landmarkremark.databinding.NavHeaderMainBinding;
 import com.landmarkremark.models.User;
 import com.landmarkremark.repository.UserRepo;
 import com.landmarkremark.utils.Utils;
-import com.landmarkremark.ui.allmarkers.FragmentAllMarkers;
+import com.landmarkremark.ui.searchmarkers.FragmentSearchMarkers;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_myMarkers, R.id.nav_allMarkers_onMap, R.id.nav_allMarkers)
+                R.id.nav_home, R.id.nav_myMarkers, R.id.nav_allMarkers_onMap, R.id.nav_searchMarkers)
                 .setDrawerLayout(activityMainBinding.drawerLayout)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -97,8 +97,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //On search
     private void searchItem(String query) {
-        FragmentAllMarkers fragment_allMarkers = (FragmentAllMarkers) getForegroundFragment();
+        FragmentSearchMarkers fragment_allMarkers = (FragmentSearchMarkers) getForegroundFragment();
         fragment_allMarkers.searchItem(query);
     }
 
